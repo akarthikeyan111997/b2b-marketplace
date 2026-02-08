@@ -43,7 +43,13 @@ const RegisterPage = () => {
       if (formData.role === 'seller') navigate('/seller/dashboard');
       else navigate('/buyer/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      if (err.response) {
+        setError(err.response.data?.message || 'Registration failed. Please check your details.');
+      } else if (err.request) {
+        setError('Unable to connect to the server. Please make sure the backend is running on port 5001.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

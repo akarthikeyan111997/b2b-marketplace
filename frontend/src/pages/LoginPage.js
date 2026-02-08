@@ -28,7 +28,15 @@ const LoginPage = () => {
       else if (user.role === 'seller') navigate('/seller/dashboard');
       else navigate(from === '/' ? '/buyer/dashboard' : from);
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      if (err.response) {
+        // Server responded with an error
+        setError(err.response.data?.message || 'Login failed. Please check your credentials.');
+      } else if (err.request) {
+        // No response received - server is down or network issue
+        setError('Unable to connect to the server. Please make sure the backend is running on port 5001.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
