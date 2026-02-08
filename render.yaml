@@ -1,0 +1,50 @@
+# Render Blueprint - B2B Marketplace (TradeConnect)
+# Deploy: https://render.com/deploy
+#
+# This deploys:
+#   1. Web Service - Node.js backend serving React frontend (Docker)
+#   2. MongoDB Atlas - Configure externally (Render doesn't offer managed MongoDB)
+#
+# Prerequisites:
+#   - Create a free MongoDB Atlas cluster at https://www.mongodb.com/atlas
+#   - Get your connection string and set it as MONGODB_URI env var
+
+services:
+  # ============================================
+  # Web Service - Full-stack App (Backend + Frontend)
+  # ============================================
+  - type: web
+    name: b2b-marketplace
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    repo: https://github.com/akarthikeyan111997/b2b-marketplace
+    branch: main
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      # Server config
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      # MongoDB connection (set this to your MongoDB Atlas URI)
+      - key: MONGODB_URI
+        sync: false  # Must be set manually in Render dashboard
+      # JWT Authentication
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates a random secret
+      - key: JWT_EXPIRE
+        value: 7d
+      # File uploads
+      - key: UPLOAD_PATH
+        value: ./uploads
+      - key: MAX_FILE_SIZE
+        value: 5242880
+      # Frontend URL (set to your Render app URL after first deploy)
+      - key: FRONTEND_URL
+        sync: false  # Set to https://b2b-marketplace.onrender.com after deploy
+    disk:
+      name: uploads
+      mountPath: /app/backend/uploads
+      sizeGB: 1
