@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: b2b-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=b2b_marketplace
+    networks:
+      - b2b-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # B2B Marketplace App (Backend + Frontend)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: b2b-app
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=5001
+      - MONGODB_URI=mongodb://mongodb:27017/b2b_marketplace
+      - JWT_SECRET=${JWT_SECRET:-b2b_marketplace_jwt_secret_change_in_production}
+      - JWT_EXPIRE=7d
+      - UPLOAD_PATH=./uploads
+      - MAX_FILE_SIZE=5242880
+      - FRONTEND_URL=http://localhost:5001
+    volumes:
+      - uploads_data:/app/backend/uploads
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - b2b-network
+
+  # Seed service (run once to populate demo data)
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: b2b-seed
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/b2b_marketplace
+      - JWT_SECRET=${JWT_SECRET:-b2b_marketplace_jwt_secret_change_in_production}
+    command: ["node", "seeds/seed.js"]
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - b2b-network
+    profiles:
+      - seed
+
+volumes:
+  mongodb_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  b2b-network:
+    driver: bridge

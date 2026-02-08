@@ -69,8 +69,12 @@ b2b-marketplace/
 
 ## 📋 Prerequisites
 
+### Local Development
 - **Node.js** v16+ and npm
 - **MongoDB** (local or MongoDB Atlas)
+
+### Docker Deployment
+- **Docker** and **Docker Compose**
 
 ## ⚙️ Setup Instructions
 
@@ -144,6 +148,62 @@ npm start
 ```
 
 Frontend runs on `http://localhost:3000`
+
+## 🐳 Docker Deployment
+
+### Quick Start (Recommended)
+
+```bash
+# 1. Build and start all services (app + MongoDB)
+docker-compose up -d --build
+
+# 2. Seed the database with demo data (run once)
+docker-compose --profile seed run --rm seed
+
+# 3. Open the app
+open http://localhost:5001
+```
+
+### Docker Commands
+
+```bash
+# View logs
+docker-compose logs -f app
+
+# Stop all services
+docker-compose down
+
+# Stop and remove all data (fresh start)
+docker-compose down -v
+
+# Rebuild after code changes
+docker-compose up -d --build
+```
+
+### Production Deployment
+
+For deploying to a cloud server (AWS, DigitalOcean, Railway, Render, etc.):
+
+1. Set environment variables on your hosting platform:
+   ```
+   NODE_ENV=production
+   PORT=5001
+   MONGODB_URI=<your-mongodb-atlas-uri>
+   JWT_SECRET=<strong-random-secret>
+   JWT_EXPIRE=7d
+   ```
+
+2. Build and run the Docker image:
+   ```bash
+   docker build -t b2b-marketplace .
+   docker run -p 5001:5001 --env-file .env b2b-marketplace
+   ```
+
+3. Or deploy directly using `docker-compose.yml` on your server.
+
+> **Note:** For production, use MongoDB Atlas instead of the containerized MongoDB, and set a strong `JWT_SECRET`.
+
+---
 
 ## 🔑 Demo Credentials
 
@@ -277,6 +337,7 @@ Frontend runs on `http://localhost:3000`
 | Uploads   | Multer (local storage)        |
 | HTTP      | Axios                         |
 | Routing   | React Router v6               |
+| DevOps    | Docker, Docker Compose        |
 
 ## 📝 License
 
