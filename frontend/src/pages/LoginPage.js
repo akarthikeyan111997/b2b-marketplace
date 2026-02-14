@@ -102,8 +102,6 @@ const LoginPage = () => {
 
           {/* Demo credentials */}
           
-       
-          
         </div>
       </div>
     </div>
