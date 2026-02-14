@@ -33,7 +33,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5001
-      - MONGODB_URI=mongodb://mongodb:27017/b2b_marketplace
+      - MONGODB_URI=mongodb+srv://akarthikeyan111997_db_user:fS9u2lWnk6RMa8uD@bheemacluster.9hotpen.mongodb.net/?appName=BheemaCluster
       - JWT_SECRET=${JWT_SECRET:-b2b_marketplace_jwt_secret_change_in_production}
       - JWT_EXPIRE=7d
       - UPLOAD_PATH=./uploads
@@ -55,7 +55,7 @@ services:
     container_name: b2b-seed
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/b2b_marketplace
+      - MONGODB_URI=mongodb+srv://akarthikeyan111997_db_user:fS9u2lWnk6RMa8uD@bheemacluster.9hotpen.mongodb.net/?appName=BheemaCluster
       - JWT_SECRET=${JWT_SECRET:-b2b_marketplace_jwt_secret_change_in_production}
     command: ["node", "seeds/seed.js"]
     depends_on:

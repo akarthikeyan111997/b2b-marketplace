@@ -97,7 +97,7 @@ Edit `backend/.env`:
 
 ```env
 PORT=5001
-MONGODB_URI=mongodb://localhost:27017/b2b_marketplace
+MONGODB_URI=mongodb+srv://akarthikeyan111997_db_user:fS9u2lWnk6RMa8uD@bheemacluster.9hotpen.mongodb.net/?appName=BheemaCluster
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRE=7d
 NODE_ENV=development
